@@ -111,7 +111,7 @@ const batteryStore = {};
       const lastModifiedTime = new Date(stat.mtime).toUTCString();
 
       response.writeHead(200, {
-        "Content-Type": "image/png",
+        "Content-Type": "image/jpeg",
         "Content-Length": Buffer.byteLength(data),
         "Last-Modified": lastModifiedTime
       });
@@ -278,7 +278,7 @@ async function renderUrlToImageAsync(browser, pageConfig, url, path) {
     }
     await page.screenshot({
       path,
-      type: "png",
+      type: "jpeg",
       clip: {
         x: 0,
         y: 0,

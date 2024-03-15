@@ -1,23 +1,35 @@
-version: "3.8"
+version: '3.8'
 
 services:
-  app:
-    image: sibbl/hass-lovelace-kindle-screensaver:latest
+  hass-screenshot:
+    container_name: hass-screenshot
+    image: jass-hass-screensaver:latest
+    deploy:
+      resources:
+        limits:
+          memory: 1G
     environment:
-      - HA_BASE_URL=https://your-path-to-home-assistant:8123
-      - HA_SCREENSHOT_URL=/lovelace?kiosk
-      - HA_ACCESS_TOKEN=eyJ0...
-      - CRON_JOB=* * * * *
-      - RENDERING_TIMEOUT=30000
-      - RENDERING_DELAY=0
-      - RENDERING_SCREEN_HEIGHT=800
-      - RENDERING_SCREEN_WIDTH=600
-      - GRAYSCALE_DEPTH=8
-      - OUTPUT_PATH=/output/cover.png
+      - TZ=Europe/Amsterdam
+      - HA_BASE_URL=http://192.168.2.40:8123
+      - HA_ACCESS_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI2MDViNjBjMjJmZDM0YTJmYWNhMTU2NmU0ZTRhM2NlYiIsImlhdCI6MTcwODcwNzIwMSwiZXhwIjoyMDI0MDY3MjAxfQ.89hoG0n1ZzYIbKQDrxKysu1sh9zoPBGyV8gOUs1BDwk
       - LANGUAGE=en
-      - ROTATION=0
-      - SCALING=1
+      - MQTT_SERVER=192.168.2.18
+      - REAL_TIME=true
+      - RENDERING_DELAY=10000
+      - COLOR_MODE=TrueColor
+      - PREFERS_COLOR_SCHEME=dark
+      - USE_IMAGE_MAGICK=true
+        # image 1
+      - HA_SCREENSHOT_URL=/dashboard-emjays/frame?kiosk
+      - RENDERING_SCREEN_HEIGHT=450
+      - RENDERING_SCREEN_WIDTH=800
+
+    restart: unless-stopped
     ports:
       - 5000:5000
-    volumes:
-      - ./output/:/output
+    healthcheck:
+      test: "wget --no-verbose --tries=1 --spider http://localhost:5000/ || exit 1"
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 60s
